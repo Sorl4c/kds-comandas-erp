@@ -1,20 +1,11 @@
 document.addEventListener('alpine:init', () => {
-    // Función auxiliar para persistencia defensiva
-    const safePersist = (val, key) => {
-        if (typeof Alpine.$persist === 'function') {
-            return Alpine.$persist(val).as(key);
-        }
-        console.warn(`Alpine.$persist no disponible para la clave: ${key}. Usando valor por defecto.`);
-        return val;
-    };
-
     Alpine.store('kds', {
         // --- ESTADO ---
         items: [],
         toasts: [],
         online: false,
-        activeView: safePersist('kanban', 'activeView'),
-        activeFilter: safePersist('todo', 'activeFilter'),
+        activeView: Alpine.$persist('kanban').as('activeView'),
+        activeFilter: Alpine.$persist('todo').as('activeFilter'),
         lastUpdate: Date.now(),
         
         // --- CONFIGURACIÓN SSE ---

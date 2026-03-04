@@ -73,15 +73,16 @@
         </main>
     </div>
 
-    <!-- Lógica de la Aplicación -->
-    <script src="js/store.js"></script>
-    <script src="js/components/header.js"></script>
-    <script src="js/components/kanbanCard.js"></script>
-    <script src="js/app.js"></script>
-
-    <!-- Alpine.js Plugins -->
+    <!-- 1. Alpine.js Plugins -->
     <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/persist@3.x.x/dist/cdn.min.js"></script>
-    <!-- Alpine.js Core -->
+
+    <!-- 2. Lógica de la Aplicación (con defer para mantener orden secuencial) -->
+    <script defer src="js/store.js"></script>
+    <script defer src="js/components/header.js"></script>
+    <script defer src="js/components/kanbanCard.js"></script>
+    <script defer src="js/app.js"></script>
+
+    <!-- 3. Alpine.js Core (SIEMPRE EL ÚLTIMO) -->
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
     <script>
