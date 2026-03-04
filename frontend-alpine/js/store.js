@@ -42,6 +42,20 @@ document.addEventListener('alpine:init', () => {
             this.sseSource.onmessage = (event) => {
                 try {
                     const data = JSON.parse(event.data);
+                    
+                    // Comprobar si hay IDs nuevos para hacer sonar la alerta
+                    if (this.items.length > 0) {
+                        const currentIds = new Set(this.items.map(i => i.id));
+                        const hasNewOrders = data.some(item => !currentIds.has(item.id) && item.estado === 'pendiente');
+                        
+                        if (hasNewOrders) {
+                            const audio = document.getElementById('new-order-sound');
+                            if (audio) {
+                                audio.play().catch(e => console.log('Autoplay prevent prevented sound', e));
+                            }
+                        }
+                    }
+
                     // Actualización reactiva de items
                     this.items = data;
                 } catch (e) {

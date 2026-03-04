@@ -73,6 +73,9 @@
         </main>
     </div>
 
+    <!-- Audio para nuevas comandas -->
+    <audio id="new-order-sound" src="assets/ding.mp3" preload="auto"></audio>
+
     <!-- 1. Alpine.js Plugins -->
     <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/persist@3.x.x/dist/cdn.min.js"></script>
 
