@@ -21,6 +21,12 @@
                                 <i data-lucide="check-circle" class="w-4.5 h-4.5"></i> Listo
                             </div>
                         </template>
+
+                        <template x-if="!table.isFullyDelivered && table.canBump">
+                            <button @click="bumpTable(table)" class="bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-bold px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition-colors shadow-md">
+                                <i data-lucide="send" class="w-3.5 h-3.5"></i> Marchar Pase
+                            </button>
+                        </template>
                     </div>
                 </div>
 
