@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KDS PoC - Alpine.js</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <style>
+        [x-cloak] { display: none !important; }
+    </style>
+</head>
+<body class="bg-gray-900 text-white min-h-screen p-8 font-sans">
+    <div x-data="kdsApp()" x-init="initApp()" class="max-w-7xl mx-auto">
+        <header class="mb-8 flex justify-between items-center">
+            <div>
+                <h1 class="text-3xl font-bold">KDS - Cocina (Alpine.js PoC)</h1>
+                <p class="text-gray-400 text-sm mt-1">Versión A: Alpine.js + Tailwind CDN + Simulador SSE</p>
+            </div>
+            <div class="text-sm bg-gray-800 px-4 py-2 rounded-full flex items-center gap-2 shadow">
+                <span class="w-2.5 h-2.5 rounded-full animate-pulse" :class="sseConnected ? 'bg-green-500' : 'bg-red-500'"></span>
+                <span x-text="sseConnected ? 'SSE Conectado (Mock)' : 'Desconectado'"></span>
+            </div>
+        </header>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            <template x-for="comanda in comandas" :key="comanda.id">
+                <!-- Comanda Card -->
+                <div class="bg-gray-800 border-l-4 rounded-lg p-4 shadow-lg flex flex-col gap-3 transition-colors duration-300"
+                     :class="getCardBorderColor(comanda)">
+                    
+                    <!-- Header: Mesa y Timer -->
+                    <div class="flex justify-between items-start">
+                        <span class="bg-gray-900 border border-gray-700 text-gray-200 text-xs font-bold px-2.5 py-1 rounded shadow-inner" x-text="comanda.mesa"></span>
+                        <div class="font-mono text-xl font-bold tracking-tight transition-colors duration-300" 
+                             :class="getTimerColor(comanda)"
+                             x-text="formatTimer(comanda.elapsed)">
+                        </div>
+                    </div>
+
+                    <!-- Body: Producto y Notas -->
+                    <div class="flex-grow">
+                        <h2 class="text-xl font-bold mb-1 leading-tight" x-text="comanda.producto"></h2>
+                        <div class="text-xs text-gray-400 mb-3">Orden: <span x-text="comanda.orderId"></span></div>
+                        
+                        <template x-if="comanda.notes && comanda.notes.length > 0">
+                            <div class="flex flex-wrap gap-1.5 mt-2">
+                                <template x-for="note in comanda.notes">
+                                    <span class="bg-amber-900/50 border border-amber-700/50 text-amber-200 text-xs px-2 py-0.5 rounded font-medium" x-text="note"></span>
+                                </template>
+                            </div>
+                        </template>
+                    </div>
+
+                    <!-- Footer: Estado y Acciones -->
+                    <div class="mt-4 pt-3 flex justify-between items-center border-t border-gray-700/50">
+                        <span class="text-xs uppercase tracking-widest font-bold" 
+                              :class="comanda.estado === 'pendiente' ? 'text-gray-400' : 'text-blue-400'"
+                              x-text="comanda.estado"></span>
+                        <button @click="avanzarEstado(comanda.id)" 
+                                class="bg-white/10 hover:bg-white/20 text-white text-sm font-medium py-1.5 px-3 rounded transition-colors focus:outline-none focus:ring-2 focus:ring-gray-500">
+                            Avanzar
+                        </button>
+                    </div>
+                </div>
+            </template>
+            
+            <div x-show="comandas.length === 0" x-cloak class="col-span-full text-center py-16 bg-gray-800/50 rounded-lg border border-dashed border-gray-700">
+                <p class="text-gray-400 text-lg">No hay comandas pendientes.</p>
+                <p class="text-gray-500 text-sm mt-2">Esperando eventos SSE simulados...</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('alpine:init', () => {
+            Alpine.data('kdsApp', () => ({
+                comandas: [],
+                sseConnected: false,
+                now: Date.now(),
+                timerInterval: null,
+                sseInterval: null,
+                counter: 1,
+
+                initApp() {
+                    // Actualizar el "ahora" cada segundo para los timers
+                    this.timerInterval = setInterval(() => {
+                        this.now = Date.now();
+                        this.updateElapsedTimes();
+                    }, 1000);
+
+                    // Simular retraso de conexión SSE
+                    setTimeout(() => {
+                        this.sseConnected = true;
+                        this.startSimulatedSSE();
+                    }, 800);
+                },
+
+                updateElapsedTimes() {
+                    this.comandas = this.comandas.map(c => {
+                        c.elapsed = Math.floor((this.now - c.estado_timestamp) / 1000);
+                        return c;
+                    });
+                },
+
+                startSimulatedSSE() {
+                    // Generar la primera comanda inmediatamente
+                    this.receiveComanda(this.generateMockComanda());
+
+                    // Simular un evento SSE cada 5 segundos
+                    this.sseInterval = setInterval(() => {
+                        this.receiveComanda(this.generateMockComanda());
+                    }, 5000);
+                },
+
+                generateMockComanda() {
+                    const id = 'i' + this.counter;
+                    const orderId = 'O-' + (100 + this.counter);
+                    this.counter++;
+                    
+                    const productos = ['Burger Smash', 'Pizza Margarita', 'Ensalada César', 'Tacos al Pastor', 'Ribeye 300g'];
+                    const mesas = ['Mesa 12', 'Mesa 4', 'Barra 1', 'Mesa 8', 'Terraza 3'];
+                    const notas = [['Sin cebolla', 'Poco hecha'], ['Extra queso'], [], ['Salsa aparte', 'Sin cilantro'], ['Término medio']];
+                    
+                    const randIdx = Math.floor(Math.random() * productos.length);
+                    
+                    // estimated_time lo pongo corto (e.g. 1 min) para que veas el cambio de color rápido
+                    return {
+                        id: id,
+                        orderId: orderId,
+                        mesa: mesas[randIdx],
+                        producto: productos[randIdx],
+                        station: "cocina",
+                        estado: "pendiente",
+                        estado_timestamp: Date.now(),
+                        estimated_time: 1, // 1 minuto estimado para forzar el cambio de colores rápido en la PoC
+                        notes: notas[randIdx]
+                    };
+                },
+
+                receiveComanda(data) {
+                    data.elapsed = Math.floor((this.now - data.estado_timestamp) / 1000);
+                    this.comandas.push(data);
+                },
+
+                avanzarEstado(id) {
+                    const comanda = this.comandas.find(c => c.id === id);
+                    if (comanda) {
+                        if (comanda.estado === 'pendiente') {
+                            comanda.estado = 'preparando';
+                        } else if (comanda.estado === 'preparando') {
+                            comanda.estado = 'listo';
+                            // Remover la tarjeta visualmente tras 1.5s para simular que sale de cocina
+                            setTimeout(() => {
+                                this.comandas = this.comandas.filter(c => c.id !== id);
+                            }, 1500);
+                        }
+                    }
+                },
+
+                formatTimer(seconds) {
+                    if (isNaN(seconds) || seconds < 0) return "00:00";
+                    const m = Math.floor(seconds / 60).toString().padStart(2, '0');
+                    const s = (seconds % 60).toString().padStart(2, '0');
+                    return `${m}:${s}`;
+                },
+
+                getTimerProgress(comanda) {
+                    if (!comanda.elapsed) return 0;
+                    const estimatedSeconds = comanda.estimated_time * 60;
+                    return comanda.elapsed / estimatedSeconds;
+                },
+
+                getTimerColor(comanda) {
+                    const progress = this.getTimerProgress(comanda);
+                    if (progress >= 1.0) return 'text-red-500';      // >= 100%
+                    if (progress >= 0.75) return 'text-amber-400';   // >= 75%
+                    return 'text-green-400';                         // < 75%
+                },
+
+                getCardBorderColor(comanda) {
+                    const progress = this.getTimerProgress(comanda);
+                    if (progress >= 1.0) return 'border-red-500';
+                    if (progress >= 0.75) return 'border-amber-500';
+                    return 'border-green-500';
+                }
+            }));
+        });
+    </script>
+</body>
+</html>
