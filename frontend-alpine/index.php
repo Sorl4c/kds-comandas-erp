@@ -69,6 +69,11 @@
                 <?php include 'components/mesas_view.php'; ?>
             </template>
 
+            <!-- Vista Servidos -->
+            <template x-if="$store.kds.activeView === 'servidos'">
+                <?php include 'components/servidos_view.php'; ?>
+            </template>
+
             <?php include 'components/toasts.php'; ?>
         </main>
     </div>

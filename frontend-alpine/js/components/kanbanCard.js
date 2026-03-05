@@ -102,6 +102,18 @@ document.addEventListener('alpine:init', () => {
                     this.$store.kds.advanceState(item.ids, this.nextState);
                 }
             }
+        },
+
+        handleRightClick() {
+            if (item.qty > 1 && this.nextState) {
+                // Tomar solo el primer ID para avanzar, separándolo del resto del grupo
+                const singleId = [item.ids[0]];
+                this.$store.kds.advanceState(singleId, this.nextState);
+                
+                // Feedback táctico/visual
+                if (navigator.vibrate) navigator.vibrate([30, 30]);
+                console.log('Dividiendo item:', item.producto, 'ID:', item.ids[0]);
+            }
         }
     }));
 });

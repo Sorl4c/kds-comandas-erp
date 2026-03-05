@@ -5,7 +5,7 @@
      @pointerdown="handlePointerDown"
      @pointerup="handlePointerUpOrLeave"
      @pointerleave="handlePointerUpOrLeave"
-     @contextmenu.prevent>
+     @contextmenu.prevent="handleRightClick">
 
     <!-- Barra de progreso del Long Press -->
     <div class="absolute bottom-0 left-0 h-1 bg-red-500 ease-linear"
@@ -19,7 +19,10 @@
         <div class="flex items-center gap-2">
             <span class="font-bold text-sm bg-slate-900/80 px-2 py-1 rounded text-white shadow-sm" x-text="item.mesa"></span>
             <template x-if="item.qty > 1">
-                <span class="font-black text-sm bg-orange-500 px-2 py-1 rounded text-white shadow-md animate-pulse" x-text="'x' + item.qty"></span>
+                <div class="flex items-center gap-1 group/qty">
+                    <span class="font-black text-sm bg-orange-500 px-2 py-1 rounded text-white shadow-md animate-pulse" x-text="'x' + item.qty"></span>
+                    <span class="hidden group-hover/qty:inline-block text-[10px] text-orange-300 font-bold bg-orange-950/40 px-1.5 py-0.5 rounded border border-orange-500/20">Split: Click Der.</span>
+                </div>
             </template>
         </div>
         <div class="text-lg font-mono flex items-center gap-1 bg-slate-900/40 px-2 py-0.5 rounded" :class="timeTextClass">

@@ -172,6 +172,14 @@ document.addEventListener('alpine:init', () => {
             };
         },
 
+        get servedItems() {
+            // Obtenemos los últimos 50 items en estado 'listo' ordenados por tiempo (más reciente primero)
+            return this.items
+                .filter(i => i.estado === 'listo')
+                .sort((a, b) => b.estado_timestamp - a.estado_timestamp)
+                .slice(0, 50);
+        },
+
         // --- GESTIÓN DE TOASTS ---
         addToast(item, ids, prevTimestamp) {
             const toastId = Date.now() + Math.random();

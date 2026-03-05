@@ -29,6 +29,11 @@
                 :class="$store.kds.activeView === 'mesas' ? 'bg-slate-600 text-white shadow-md' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-700/50'">
                 <i data-lucide="layout-grid" class="w-4 h-4"></i> Mesas
             </button>
+            <button @click="$store.kds.activeView = 'servidos'"
+                class="px-4 py-2 rounded-lg font-bold text-sm transition-all duration-200 flex items-center gap-2"
+                :class="$store.kds.activeView === 'servidos' ? 'bg-slate-600 text-white shadow-md' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-700/50'">
+                <i data-lucide="history" class="w-4 h-4"></i> Servidos
+            </button>
         </div>
     </div>
 
