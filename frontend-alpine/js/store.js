@@ -78,7 +78,39 @@ document.addEventListener('alpine:init', () => {
         },
 
         // --- ACCIONES ---
+        async updateStatus(ids, newState) {
+            // Aseguramos que ids sea un array si viene un solo ID
+            if (!Array.isArray(ids)) ids = [ids];
+            
+            // Lógica Optimista
+            const originalItems = JSON.parse(JSON.stringify(this.items));
+            const timestamp = Date.now();
+            
+            this.items = this.items.map(item => {
+                if (ids.includes(item.id)) {
+                    return { ...item, estado: newState, estado_timestamp: timestamp };
+                }
+                return item;
+            });
+
+            try {
+                const response = await fetch('../backend/update_comanda.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ ids, estado: newState })
+                });
+                
+                if (!response.ok) throw new Error('Error en el servidor');
+            } catch (error) {
+                console.error('Fallo al actualizar estado:', error);
+                this.items = originalItems; // Rollback
+            }
+        },
+
         async advanceState(ids, newState) {
+            if (!ids) return;
+            if (!Array.isArray(ids)) ids = [ids];
+
             // Lógica Optimista: Actualizar localmente antes del fetch
             const originalItems = JSON.parse(JSON.stringify(this.items));
             const timestamp = Date.now();
@@ -113,6 +145,9 @@ document.addEventListener('alpine:init', () => {
         },
 
         async goBackState(ids) {
+            if (!ids) return;
+            if (!Array.isArray(ids)) ids = [ids];
+
             const item = this.items.find(i => ids.includes(i.id));
             if (!item) return;
 
@@ -121,6 +156,8 @@ document.addEventListener('alpine:init', () => {
                 prevState = item.station;
             } else if (item.estado === item.station) {
                 prevState = 'pendiente';
+            } else if (item.estado === 'listo') {
+                prevState = 'emplatado';
             }
 
             if (prevState !== item.estado) {
