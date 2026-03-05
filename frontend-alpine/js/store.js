@@ -8,6 +8,12 @@ document.addEventListener('alpine:init', () => {
         activeFilter: Alpine.$persist('todo').as('activeFilter'),
         lastUpdate: Date.now(),
         
+        // Historial de servidos
+        showFullHistory: false,
+        historyItems: [],
+        loadingHistory: false,
+        selectedTableFilter: '',
+
         // --- CONFIGURACIÓN SSE ---
         sseSource: null,
         reconnectTimeout: null,
@@ -78,6 +84,25 @@ document.addEventListener('alpine:init', () => {
         },
 
         // --- ACCIONES ---
+        async toggleHistory() {
+            this.showFullHistory = !this.showFullHistory;
+            if (this.showFullHistory && this.historyItems.length === 0) {
+                this.loadingHistory = true;
+                try {
+                    const response = await fetch('../backend/get_historial.php');
+                    if (response.ok) {
+                        this.historyItems = await response.json();
+                    } else {
+                        console.error('Error cargando historial completo');
+                    }
+                } catch (e) {
+                    console.error('Fallo en fetch historial:', e);
+                } finally {
+                    this.loadingHistory = false;
+                }
+            }
+        },
+
         async updateStatus(ids, newState) {
             // Aseguramos que ids sea un array si viene un solo ID
             if (!Array.isArray(ids)) ids = [ids];
@@ -210,11 +235,26 @@ document.addEventListener('alpine:init', () => {
         },
 
         get servedItems() {
-            // Obtenemos los últimos 50 items en estado 'listo' ordenados por tiempo (más reciente primero)
-            return this.items
-                .filter(i => i.estado === 'listo')
-                .sort((a, b) => b.estado_timestamp - a.estado_timestamp)
-                .slice(0, 50);
+            // Decidir qué array base usar
+            let baseItems = this.showFullHistory ? this.historyItems : this.items.filter(i => i.estado === 'listo');
+            
+            // Ordenar por tiempo (más reciente primero) sin mutar el array original
+            let sorted = [...baseItems].sort((a, b) => b.estado_timestamp - a.estado_timestamp);
+            
+            // Filtrar por mesa si hay alguna seleccionada
+            if (this.selectedTableFilter && this.selectedTableFilter !== '') {
+                sorted = sorted.filter(i => i.mesa === this.selectedTableFilter);
+            }
+            
+            // Limitar a los 50 si no es el historial completo, o devolver todos si es el completo
+            return this.showFullHistory ? sorted : sorted.slice(0, 50);
+        },
+
+        get availableTables() {
+            // Extraer las mesas únicas del dataset actual (sin filtrar por mesa)
+            let baseItems = this.showFullHistory ? this.historyItems : this.items.filter(i => i.estado === 'listo');
+            const tables = new Set(baseItems.map(i => i.mesa).filter(Boolean));
+            return Array.from(tables).sort();
         },
 
         // --- GESTIÓN DE TOASTS ---

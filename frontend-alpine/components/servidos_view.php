@@ -1,13 +1,39 @@
 <div class="h-full flex flex-col fade-in">
     <!-- Encabezado de la Vista -->
-    <div class="mb-6 flex justify-between items-end">
-        <div>
-            <h2 class="text-3xl font-black text-white tracking-tight">Historial de <span class="text-green-500">Servidos</span></h2>
-            <p class="text-slate-400 font-medium">Últimos 50 platos finalizados</p>
-        </div>
-        <div class="bg-slate-800/50 border border-slate-700 px-4 py-2 rounded-xl flex items-center gap-3">
-            <span class="text-xs font-bold text-slate-500 uppercase tracking-widest">Total Sesión</span>
-            <span class="text-2xl font-mono font-black text-green-400" x-text="$store.kds.items.filter(i => i.estado === 'listo').length"></span>
+    <div class="mb-6 flex flex-col gap-4">
+        <div class="flex justify-between items-end">
+            <div>
+                <h2 class="text-3xl font-black text-white tracking-tight">Historial de <span class="text-green-500">Servidos</span></h2>
+                <p class="text-slate-400 font-medium">
+                    <span x-text="$store.kds.showFullHistory ? 'Últimos 200 platos finalizados' : 'Últimos 50 platos recientes'"></span>
+                    <span x-show="$store.kds.selectedTableFilter" x-text="' (Filtro: ' + $store.kds.selectedTableFilter + ')'" class="text-amber-400 font-bold ml-1"></span>
+                </p>
+            </div>
+            <div class="flex items-center gap-4 flex-wrap justify-end">
+                <!-- Filtro por Mesa -->
+                <div class="flex items-center gap-2 bg-slate-800/50 border border-slate-700 px-3 py-1.5 rounded-xl">
+                    <i data-lucide="filter" class="w-4 h-4 text-slate-500"></i>
+                    <select x-model="$store.kds.selectedTableFilter" class="bg-transparent border-none text-slate-200 text-sm font-bold focus:ring-0 cursor-pointer outline-none w-32">
+                        <option value="" class="bg-slate-800">Todas las mesas</option>
+                        <template x-for="mesa in $store.kds.availableTables" :key="mesa">
+                            <option :value="mesa" x-text="mesa" class="bg-slate-800"></option>
+                        </template>
+                    </select>
+                </div>
+                
+                <!-- Toggle Historial -->
+                <button @click="$store.kds.toggleHistory()" 
+                        class="flex items-center gap-2 px-4 py-2 rounded-xl border transition-colors shadow-sm"
+                        :class="$store.kds.showFullHistory ? 'bg-amber-600/20 border-amber-500/50 text-amber-400' : 'bg-slate-800/50 border-slate-700 text-slate-400 hover:bg-slate-700 hover:text-slate-200'">
+                    <i data-lucide="database" class="w-4 h-4" :class="{'animate-spin': $store.kds.loadingHistory}"></i>
+                    <span class="text-sm font-bold" x-text="$store.kds.showFullHistory ? 'Viendo Historial (200)' : 'Ver Historial Extendido'"></span>
+                </button>
+
+                <div class="bg-slate-800/50 border border-slate-700 px-4 py-2 rounded-xl flex items-center gap-3">
+                    <span class="text-xs font-bold text-slate-500 uppercase tracking-widest" x-text="$store.kds.selectedTableFilter ? 'Total Mesa' : 'Total Vista'"></span>
+                    <span class="text-2xl font-mono font-black text-green-400" x-text="$store.kds.servedItems.length"></span>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -24,7 +50,7 @@
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-700/50">
-                    <template x-for="item in $store.kds.items.filter(i => i.estado === 'listo').sort((a,b) => b.estado_timestamp - a.estado_timestamp)" :key="item.id">
+                    <template x-for="item in $store.kds.servedItems" :key="item.id">
                         <!-- Cada fila es ahora un componente kanbanCard -->
                         <tr x-data="kanbanCard(item)" 
                             x-show="show"
@@ -67,12 +93,12 @@
                     </template>
 
                     <!-- Empty State -->
-                    <template x-if="$store.kds.items.filter(i => i.estado === 'listo').length === 0">
+                    <template x-if="$store.kds.servedItems.length === 0">
                         <tr>
                             <td colspan="4" class="px-6 py-20 text-center">
                                 <div class="flex flex-col items-center opacity-20">
                                     <i data-lucide="history" class="w-16 h-16 mb-4"></i>
-                                    <p class="text-xl font-bold">No hay platos servidos aún</p>
+                                    <p class="text-xl font-bold">No hay platos servidos con estos filtros</p>
                                 </div>
                             </td>
                         </tr>

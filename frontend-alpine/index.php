@@ -85,10 +85,10 @@
     <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/persist@3.x.x/dist/cdn.min.js"></script>
 
     <!-- 2. Lógica de la Aplicación (con defer para mantener orden secuencial) -->
-    <script defer src="js/store.js"></script>
-    <script defer src="js/components/header.js"></script>
-    <script defer src="js/components/kanbanCard.js"></script>
-    <script defer src="js/app.js"></script>
+    <script defer src="js/store.js?v=2"></script>
+    <script defer src="js/components/header.js?v=2"></script>
+    <script defer src="js/components/kanbanCard.js?v=2"></script>
+    <script defer src="js/app.js?v=2"></script>
 
     <!-- 3. Alpine.js Core (SIEMPRE EL ÚLTIMO) -->
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
