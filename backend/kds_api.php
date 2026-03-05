@@ -10,7 +10,7 @@ set_time_limit(0);
 // Limpiar y desactivar cualquier buffer de salida previo
 while (ob_get_level()) ob_end_clean();
 
-$db = new SQLite3('kds_database.db');
+$db = new SQLite3('kds_local.sqlite');
 
 // Función para obtener todas las comandas activas
 function getActiveComandas($db) {

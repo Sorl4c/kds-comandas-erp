@@ -6,7 +6,7 @@ header('Content-Type: application/json');
 
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') exit;
 
-$db = new SQLite3('kds_database.db');
+$db = new SQLite3('kds_local.sqlite');
 
 $data = json_decode(file_get_contents('php://input'), true);
 

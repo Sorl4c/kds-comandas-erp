@@ -6,6 +6,8 @@ dist/
 # Base de datos local
 *.db
 *.db-journal
+*.sqlite
+*.sqlite3
 
 # IDEs y Sistema
 .vscode/

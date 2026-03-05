@@ -1,5 +1,18 @@
 <?php
-$db = new SQLite3('kds_database.db');
+$db = new SQLite3('kds_local.sqlite');
+
+// Asegurar que la tabla existe
+$db->exec("CREATE TABLE IF NOT EXISTS comandas (
+    id TEXT PRIMARY KEY,
+    orderId TEXT,
+    mesa TEXT,
+    producto TEXT,
+    station TEXT,
+    estado TEXT,
+    estado_timestamp INTEGER,
+    estimated_time INTEGER,
+    notes TEXT
+)");
 
 $products = [
     ['n' => 'Burger Smash', 's' => 'cocina', 'e' => 10],
