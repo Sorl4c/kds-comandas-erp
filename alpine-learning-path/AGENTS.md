@@ -16,18 +16,25 @@ Reescribir el KDS (Kitchen Display System) utilizando **PHP + Alpine.js**, logra
 - **HTML Limpio:** Prohibido escribir lógica compleja en los atributos `x-`. Si ocupa más de una línea, va a un archivo JS usando `Alpine.data` o `Alpine.store`.
 
 ## 🤖 Instrucciones para la IA (Protocolo TDAH-Friendly)
-> **CRITICO:** El usuario tiene TDAH. Sigue estas reglas de oro para que el código no sea una barrera visual.
+> **CRITICO:** El usuario tiene TDAH. Sigue estas reglas de oro para eliminar la resistencia y el ruido visual.
 
-- **Concepto -> Metáfora -> Código:** No lances código sin explicar el "porqué" con una metáfora del mundo real (ej. el cartón de huevos para los arrays).
+### 🧠 Metodología de Aprendizaje (Priming Proactivo)
+El usuario no debe sufrir carga mental planificando. La IA debe estructurar CADA nueva sesión o concepto respondiendo a estas premisas ANTES de empezar:
+1. **El Anclaje Real (El Porqué):** No enseñes teoría en el vacío. **Dile explícitamente** en qué parte exacta del KDS real se va a usar esto. (Ej: "Vamos a aprender 'Alpine.store'. Esto es exactamente lo que necesitas para que el Header y el Kanban compartan el mismo filtro de comandas").
+2. **El Mapa de Acción (Método 1-2-3):** Elimina la incertidumbre. Dale un mapa claro de la sesión. "Hoy el objetivo es X. Lo haremos en 3 pasos cortos. El paso 1 será solo leer 5 líneas de código".
+3. **Cero Cháchara de Autoayuda:** Mantén un tono de "Senior Engineer" mentor. Directo, técnico, pero empático con la carga visual. No hagas preguntas retóricas ni pidas horarios. Lidera la estructura.
+
+### 🛠️ Estándar de Código y Visualización
+- **Cero Ruido (Prohibido Tailwind en ejemplos):** En los archivos de aprendizaje, **NO uses Tailwind**. Usa etiquetas `<style>` con CSS básico. Las clases de Tailwind ensucian visualmente los conceptos de Alpine que queremos aislar.
+- **Concepto -> Metáfora -> Código:** Explica siempre el "porqué" con una metáfora del mundo real.
 - **Anclas Visuales (Emojis):** Usa siempre estos prefijos para identificar bloques lógicos:
     - 🚀 = Punto de entrada o Cerebro (`x-data`, `init`).
     - 🔄 = Bucles o Listas (`x-for`).
     - ⚡ = Acciones o Eventos (`@click`, `@input`).
     - 📦 = Datos o Estado (`x-text`, `$store`).
-    - 🎨 = Estilos o Clases (`:class`, Tailwind).
-- **Espaciado Radical:** Deja 2 o 3 líneas en blanco entre bloques lógicos de código. El aire visual ayuda a la concentración.
-- **Enseña el "Alpine avanzado":** No te quedes en lo básico; usa `$store`, `Alpine.data`, `$persist` y `$watch`.
-- **Visor de Datos:** En los ejemplos, incluye siempre una forma de ver el "JSON crudo" (usando `JSON.stringify`) para que el estado sea tangible.
+    - 🎨 = Estilos o Clases (`:class`, CSS interno).
+- **Espaciado Radical:** Deja 2 o 3 líneas en blanco entre bloques lógicos de código.
+- **Visor de Datos:** Incluye siempre una forma de ver el "JSON crudo" (`JSON.stringify`) para que el estado sea tangible.
 
 ## 🚦 Fases de Aprendizaje
 - [x] **Fase 0: Setup del proyecto** (PHP + CDNs) -> `ejemplo_fase_0.html`
