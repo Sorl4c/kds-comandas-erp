@@ -27,6 +27,10 @@
                     <template x-for="item in $store.kds.items.filter(i => i.estado === 'listo').sort((a,b) => b.estado_timestamp - a.estado_timestamp)" :key="item.id">
                         <!-- Cada fila es ahora un componente kanbanCard -->
                         <tr x-data="kanbanCard(item)" 
+                            x-show="show"
+                            x-transition:enter="transition ease-out duration-300"
+                            x-transition:enter-start="opacity-0"
+                            x-transition:enter-end="opacity-100"
                             class="hover:bg-slate-700/30 transition-colors group relative cursor-pointer select-none touch-none"
                             @pointerdown="handlePointerDown"
                             @pointerup="handlePointerUpOrLeave"

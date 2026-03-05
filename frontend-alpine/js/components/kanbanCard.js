@@ -20,6 +20,12 @@ document.addEventListener('alpine:init', () => {
         if (!item.ids) item.ids = [item.id];
 
         return {
+            show: false,
+            init() {
+                setTimeout(() => {
+                    this.show = true;
+                }, 10);
+            },
             isHolding: false,
             holdTimeout: null,
             hasLongPressed: false,
