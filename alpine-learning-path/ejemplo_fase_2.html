@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fase 2 - Extracción de Lógica (TDAH Friendly)</title>
+
+
+    <!-- 📦 LIBRERÍA -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+
+    <!-- 🎨 ESTILOS (CSS Básico) -->
+    <style>
+        body {
+            font-family: sans-serif;
+            background-color: #0f172a;
+            color: #f8fafc;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .tarjeta {
+            background-color: #1e293b;
+            padding: 2.5rem;
+            border-radius: 12px;
+            width: 450px;
+            border: 1px solid #334155;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+            margin: 1.5rem 0;
+        }
+
+        li {
+            background-color: #334155;
+            margin: 0.8rem 0;
+            padding: 1rem;
+            border-radius: 8px;
+            border-left: 4px solid #34d399;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        button {
+            background-color: #4f46e5;
+            color: white;
+            border: none;
+            padding: 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            width: 100%;
+        }
+
+        .visor-json {
+            background: #000;
+            color: #34d399;
+            padding: 1rem;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 0.8rem;
+            margin-top: 1.5rem;
+        }
+    </style>
+
+
+
+    <!-- 🚀 EL MANDO A DISTANCIA (Lógica extraída) -->
+    <script>
+        // Esperamos a que Alpine esté listo
+        document.addEventListener('alpine:init', () => {
+
+            // Registramos el componente 'kdsCocina'
+            // Esto es como crear una "plantilla" de comportamiento
+            Alpine.data('kdsCocina', (datosIniciales) => ({
+                
+                // 📦 DATOS (Estado)
+                comandas: datosIniciales || [],
+                mostrarJson: false,
+
+
+                // 🚀 INICIALIZACIÓN (Como el useEffect de React)
+                init() {
+                    console.log('¡Componente de Cocina Arrancado!');
+                },
+
+
+                // ⚡ ACCIONES (Métodos)
+                addComanda(nombre) {
+                    this.comandas.push({ 
+                        nombre: nombre, 
+                        urgente: false 
+                    });
+                },
+
+                limpiar() {
+                    this.comandas = [];
+                }
+
+            }));
+
+        });
+    </script>
+
+
+</head>
+<body>
+
+
+    <!-- 📺 LA TELEVISIÓN (HTML Limpio) -->
+    <!-- Ahora x-data solo dice el nombre del componente -->
+    <div class="tarjeta" 
+         x-data="kdsCocina([
+            { nombre: 'Pizza Margarita', urgente: false },
+            { nombre: 'Burger de Buey', urgente: true }
+         ])"
+    >
+
+
+        <h2 style="color: #34d399; margin: 0;">Fase 2: El Mando</h2>
+
+
+
+        <!-- 🔄 EL BUCLE -->
+        <ul>
+            <template x-for="item in comandas">
+                <li>
+                    <span x-text="item.nombre"></span>
+                    <span x-show="item.urgente" style="color: #ef4444;">🔥</span>
+                </li>
+            </template>
+        </ul>
+
+
+
+        <!-- ⚡ LOS BOTONES (Llaman a las funciones del mando) -->
+        <div style="display: flex; gap: 10px;">
+            
+            <button @click="addComanda('Nueva ' + (comandas.length + 1))">
+                + Añadir
+            </button>
+
+            <button @click="limpiar()" style="background: #ef4444;">
+                Limpiar
+            </button>
+
+        </div>
+
+
+
+        <!-- 👁️ VISOR DE REPASO -->
+        <button @click="mostrarJson = !mostrarJson" 
+                style="margin-top: 1rem; background: #475569; font-size: 0.8rem;">
+            Ver JSON Crudo
+        </button>
+
+
+        <div class="visor-json" x-show="mostrarJson">
+            <pre x-text="JSON.stringify(comandas, null, 2)"></pre>
+        </div>
+
+
+    </div>
+
+
+</body>
+</html>

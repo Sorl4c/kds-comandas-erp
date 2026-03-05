@@ -15,16 +15,25 @@ Reescribir el KDS (Kitchen Display System) utilizando **PHP + Alpine.js**, logra
 - **Cero Build Steps:** Nada de Node, NPM ni Vite. Solo ficheros y el navegador.
 - **HTML Limpio:** Prohibido escribir lógica compleja en los atributos `x-`. Si ocupa más de una línea, va a un archivo JS usando `Alpine.data` o `Alpine.store`.
 
-## 🤖 Instrucciones para la IA
-- Explica siempre el porqué, no solo el cómo.
-- Enseña el "Alpine avanzado", no el Alpine de "añadir una clase al hacer clic".
-- Usa `$store`, `Alpine.data`, `$persist` y `$watch`.
-- Los datos y la conexión real SSE son la prioridad.
+## 🤖 Instrucciones para la IA (Protocolo TDAH-Friendly)
+> **CRITICO:** El usuario tiene TDAH. Sigue estas reglas de oro para que el código no sea una barrera visual.
+
+- **Concepto -> Metáfora -> Código:** No lances código sin explicar el "porqué" con una metáfora del mundo real (ej. el cartón de huevos para los arrays).
+- **Anclas Visuales (Emojis):** Usa siempre estos prefijos para identificar bloques lógicos:
+    - 🚀 = Punto de entrada o Cerebro (`x-data`, `init`).
+    - 🔄 = Bucles o Listas (`x-for`).
+    - ⚡ = Acciones o Eventos (`@click`, `@input`).
+    - 📦 = Datos o Estado (`x-text`, `$store`).
+    - 🎨 = Estilos o Clases (`:class`, Tailwind).
+- **Espaciado Radical:** Deja 2 o 3 líneas en blanco entre bloques lógicos de código. El aire visual ayuda a la concentración.
+- **Enseña el "Alpine avanzado":** No te quedes en lo básico; usa `$store`, `Alpine.data`, `$persist` y `$watch`.
+- **Visor de Datos:** En los ejemplos, incluye siempre una forma de ver el "JSON crudo" (usando `JSON.stringify`) para que el estado sea tangible.
 
 ## 🚦 Fases de Aprendizaje
-- [ ] Fase 0: Setup del proyecto (PHP + CDNs)
-- [ ] Fase 1: Reactividad básica (x-data, x-text)
-- [ ] Fase 2: Extracción de lógica (Alpine.data)
-- [ ] Fase 3: Estado Global y Getters (Alpine.store)
-- [ ] Fase 4: Plugins, Efectos y Magia ($persist, x-effect)
-- [ ] Fase 5: Conexión Real (SSE y Fetch)
+- [x] **Fase 0: Setup del proyecto** (PHP + CDNs) -> `ejemplo_fase_0.html`
+- [x] **Fase 1: Reactividad básica** (x-data, x-text, x-for, :class) -> `ejemplo_fase_1.html`
+- [x] **Conexión PHP + SQLite** (El "Clic" mental) -> `ejemplo_fase_php.php`
+- [ ] **Fase 2: Extracción de lógica** (Alpine.data)
+- [ ] **Fase 3: Estado Global y Getters** (Alpine.store)
+- [ ] **Fase 4: Plugins, Efectos y Magia** ($persist, x-effect)
+- [ ] **Fase 5: Conexión Real** (SSE y Fetch)

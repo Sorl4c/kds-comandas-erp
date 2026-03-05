@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fase 1 - Clases Dinámicas (TDAH Friendly)</title>
+
+    <!-- 📦 LIBRERÍA (Alpine.js) -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <!-- 🎨 ESTILOS (CSS Básico) -->
+    <style>
+        body {
+            font-family: sans-serif;
+            background-color: #0f172a;
+            color: #f8fafc;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .tarjeta {
+            background-color: #1e293b;
+            padding: 2.5rem;
+            border-radius: 12px;
+            width: 400px;
+            border: 1px solid #334155;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+            margin: 1.5rem 0;
+        }
+
+        li {
+            background-color: #334155;
+            margin: 0.8rem 0;
+            padding: 1rem;
+            border-radius: 8px;
+            border-left: 4px solid #34d399;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        /* 🚨 CLASE URGENTE */
+        .es-urgente {
+            background-color: #7f1d1d;
+            /* Rojo oscuro */
+            border-left: 4px solid #ef4444;
+            /* Rojo brillante */
+            transform: scale(1.02);
+        }
+
+        button {
+            background-color: #4f46e5;
+            color: white;
+            border: none;
+            padding: 0.8rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .btn-add {
+            width: 100%;
+            margin-top: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .btn-urgente {
+            background-color: #475569;
+            font-size: 0.7rem;
+            padding: 0.4rem 0.6rem;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- 🚀 EL CEREBRO (x-data) -->
+    <!-- Ahora las comandas son objetos con nombre y un interruptor 'urgente' -->
+    <div class="tarjeta" x-data="{ 
+            comandas: [
+                { nombre: 'Pizza Margarita', urgente: false },
+                { nombre: 'Hamburguesa Buey', urgente: true },
+                { nombre: 'Ensalada César', urgente: false }
+            ] 
+         }">
+        <h2 style="color: #34d399; margin: 0">Gestión de Cocina</h2>
+
+        <!-- 🔄 EL BUCLE (x-for) -->
+        <ul>
+            <template x-for="(item, index) in comandas" :key="index">
+                <!-- 🎨 CLASE DINÁMICA (:class) -->
+                <!-- "Si item.urgente es verdad, pon la clase 'es-urgente'" -->
+                <li :class="{ 'is-urgente': item.urgente }">
+                    <span x-text="item.nombre"></span>
+
+                    <!-- ⚡ BOTÓN INTERNO PARA CAMBIAR URGENCIA -->
+                    <!-- Cambia el valor de 'urgente' solo de ESTA comanda -->
+                    <button class="btn-urgente" @click="item.urgente = !item.urgente">
+                        <span x-text="item.urgente ? 'QUITAR URGENCIA' : 'HACER URGENTE'"></span>
+                    </button>
+                </li>
+            </template>
+        </ul>
+
+        <!-- ⚡ AÑADIR NUEVA COMANDA -->
+        <button class="btn-add" @click="comandas.push({ nombre: 'Nueva ' + (comandas.length + 1), urgente: false })">
+            + Nueva Comanda
+        </button>
+
+        <!-- 📦 EL CONTADOR -->
+        <p style="text-align: center; margin-top: 2rem; color: #94a3b8">
+            Total en cola: <b x-text="comandas.length"></b>
+        </p>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fase 0 - Setup de Alpine.js</title>
+
+    <!-- 1. Tailwind CSS para los estilos rápidos -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- 
+        REGLA DE ORO DE ALPINE: 
+        Los plugins siempre van ANTES que el core.
+        Todos llevan el atributo "defer" para que no bloqueen la carga del HTML.
+    -->
+
+    <!-- 2. Plugins de Alpine (Ej: Persist para guardar datos en el navegador) -->
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/@alpinejs/persist@3.x.x/dist/cdn.min.js"
+    ></script>
+
+    <!-- 3. Core de Alpine.js -->
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"
+    ></script>
+  </head>
+  <body
+    class="bg-slate-900 text-white min-h-screen flex items-center justify-center"
+  >
+    <!-- 
+        x-data="{ mensaje: '¡Hola desde Alpine!' }" inicializa un componente de Alpine.
+        Aquí es donde Alpine cobra vida. 
+    -->
+    <div
+      class="text-center p-8 bg-slate-800 rounded-lg shadow-lg"
+      x-data="{ mensaje: '¡Fase 0 Completada! Alpine está funcionando.', clicks: 0 }"
+    >
+      <h1 class="text-3xl font-bold text-blue-400 mb-4" x-text="mensaje">
+        Cargando...
+      </h1>
+
+      <p class="text-slate-400 mb-6">
+        Si ves el mensaje verde arriba, significa que Alpine.js se ha cargado
+        correctamente a través del CDN.
+      </p>
+
+      <!-- Un pequeño extra interactivo para probar que funciona -->
+      <button
+        @click="clicks++"
+        class="px-4 py-2 bg-red-600 hover:bg-indigo-500 rounded font-semibold transition-colors"
+      >
+        Has hecho clic <span x-text="clicks"></span> veces
+      </button>
+    </div>
+  </body>
+</html>
