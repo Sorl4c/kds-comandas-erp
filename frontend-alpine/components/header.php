@@ -24,6 +24,11 @@
                 :class="$store.kds.activeView === 'kanban' ? 'bg-slate-600 text-white shadow-md' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-700/50'">
                 <i data-lucide="kanban-square" class="w-4 h-4"></i> Kanban
             </button>
+            <button @click="$store.kds.activeView = 'comanda'"
+                class="px-4 py-2 rounded-lg font-bold text-sm transition-all duration-200 flex items-center gap-2"
+                :class="$store.kds.activeView === 'comanda' ? 'bg-slate-600 text-white shadow-md' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-700/50'">
+                <i data-lucide="receipt" class="w-4 h-4"></i> Comanda
+            </button>
             <button @click="$store.kds.activeView = 'mesas'"
                 class="px-4 py-2 rounded-lg font-bold text-sm transition-all duration-200 flex items-center gap-2"
                 :class="$store.kds.activeView === 'mesas' ? 'bg-slate-600 text-white shadow-md' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-700/50'">

@@ -69,6 +69,11 @@
                 <?php include 'components/mesas_view.php'; ?>
             </template>
 
+            <!-- Vista Comanda -->
+            <template x-if="$store.kds.activeView === 'comanda'">
+                <?php include 'components/comanda_view.php'; ?>
+            </template>
+
             <!-- Vista Servidos -->
             <template x-if="$store.kds.activeView === 'servidos'">
                 <?php include 'components/servidos_view.php'; ?>
@@ -88,6 +93,7 @@
     <script defer src="js/store.js?v=2"></script>
     <script defer src="js/components/header.js?v=2"></script>
     <script defer src="js/components/kanbanCard.js?v=2"></script>
+    <script defer src="js/components/comandaCard.js?v=2"></script>
     <script defer src="js/app.js?v=2"></script>
 
     <!-- 3. Alpine.js Core (SIEMPRE EL ÚLTIMO) -->

@@ -191,7 +191,151 @@ document.addEventListener('alpine:init', () => {
             }
         },
 
+        // --- HELPERS COMANDAS ---
+        mapItemStateToOrderPhase(item) {
+            if (item.estado === 'pendiente') return 'pendiente';
+            if (['cocina', 'horno', 'barra'].includes(item.estado)) return 'preparacion';
+            if (item.estado === 'emplatado') return 'emplatado';
+            return 'listo';
+        },
+
+        resolveOrderPhase(items) {
+            if (!items || items.length === 0) return 'listo';
+            const phases = items.map(i => this.mapItemStateToOrderPhase(i));
+            if (phases.includes('pendiente')) return 'pendiente';
+            if (phases.includes('preparacion')) return 'preparacion';
+            if (phases.includes('emplatado')) return 'emplatado';
+            return 'listo';
+        },
+
+        buildOrderSummary(items) {
+            const summary = [];
+            items.forEach(item => {
+                const notesKey = Array.isArray(item.notes) ? item.notes.join('|') : '';
+                const key = `${item.producto}-${notesKey}`;
+                const existing = summary.find(s => s.key === key);
+                
+                if (existing) {
+                    existing.qty += 1;
+                    if (!existing.estados.includes(item.estado)) {
+                        existing.estados.push(item.estado);
+                    }
+                } else {
+                    summary.push({
+                        key,
+                        producto: item.producto,
+                        qty: 1,
+                        notes: Array.isArray(item.notes) ? item.notes : [],
+                        estados: [item.estado]
+                    });
+                }
+            });
+            return summary;
+        },
+
+        async advanceFullOrder(orderId) {
+            if (!orderId) {
+                console.warn('[KDS] advanceFullOrder llamado sin orderId válido');
+                return;
+            }
+
+            // Find all items belonging to this order
+            const orderItems = this.items.filter(i => i.orderId === orderId);
+            
+            const activeItems = orderItems.filter(i => i.estado !== 'listo');
+            if (activeItems.length === 0) return;
+
+            const phase = this.resolveOrderPhase(activeItems);
+            
+            let idsToUpdate = [];
+            let newState = '';
+
+            if (phase === 'pendiente') {
+                const pendingItems = activeItems.filter(i => i.estado === 'pendiente');
+                const byStation = {};
+                pendingItems.forEach(i => {
+                    if (!byStation[i.station]) byStation[i.station] = [];
+                    byStation[i.station].push(i.id);
+                });
+                
+                for (const station in byStation) {
+                    await this.advanceState(byStation[station], station);
+                }
+                return;
+            } else if (phase === 'preparacion') {
+                idsToUpdate = activeItems.filter(i => ['cocina', 'horno', 'barra'].includes(i.estado)).map(i => i.id);
+                newState = 'emplatado';
+            } else if (phase === 'emplatado') {
+                idsToUpdate = activeItems.filter(i => i.estado === 'emplatado').map(i => i.id);
+                newState = 'listo';
+            }
+
+            if (idsToUpdate.length > 0 && newState) {
+                await this.advanceState(idsToUpdate, newState);
+            }
+        },
+
         // --- GETTERS (Derivados) ---
+        get fullOrderColumns() {
+            const map = new Map();
+
+            this.items.forEach(item => {
+                if (!item.orderId) {
+                    // console.warn('[KDS] Item sin orderId excluido de vista comanda', item);
+                    return;
+                }
+
+                if (!map.has(item.orderId)) {
+                    map.set(item.orderId, {
+                        orderId: item.orderId,
+                        mesa: item.mesa || '?',
+                        items: []
+                    });
+                }
+                map.get(item.orderId).items.push(item);
+            });
+
+            const grouped = Array.from(map.values()).filter(group => {
+                return group.items.some(i => i.estado !== 'listo');
+            }).map(group => {
+                const activeItems = group.items.filter(i => i.estado !== 'listo');
+                const phase = this.resolveOrderPhase(activeItems);
+                
+                const oldestActiveTimestamp = activeItems.reduce((min, i) => Math.min(min, i.estado_timestamp), Infinity);
+                const estimatedMaxTime = activeItems.reduce((max, i) => Math.max(max, i.estimated_time || 0), 0);
+                
+                const activeItemsCount = activeItems.length;
+
+                return {
+                    orderId: group.orderId,
+                    mesa: group.mesa,
+                    ids: activeItems.map(i => i.id),
+                    items: activeItems,
+                    phase: phase,
+                    totalItems: group.items.length,
+                    completedItems: group.items.filter(i => i.estado === 'listo').length,
+                    activeItemsCount: activeItemsCount,
+                    pendingItems: activeItems.filter(i => i.estado === 'pendiente').length,
+                    preparingItems: activeItems.filter(i => ['cocina', 'horno', 'barra'].includes(i.estado)).length,
+                    platedItems: activeItems.filter(i => i.estado === 'emplatado').length,
+                    oldestActiveTimestamp: oldestActiveTimestamp,
+                    estimatedMaxTime: estimatedMaxTime,
+                    summaryLines: this.buildOrderSummary(activeItems),
+                    notes: Array.from(new Set(activeItems.flatMap(i => Array.isArray(i.notes) ? i.notes : []))),
+                    canAdvance: phase !== 'listo' && activeItemsCount > 0
+                };
+            });
+
+            // Sort logically: oldest first
+            grouped.sort((a, b) => a.oldestActiveTimestamp - b.oldestActiveTimestamp);
+
+            return {
+                pendiente: grouped.filter(g => g.phase === 'pendiente'),
+                preparacion: grouped.filter(g => g.phase === 'preparacion'),
+                emplatado: grouped.filter(g => g.phase === 'emplatado')
+            };
+        },
+
         get groupedColumns() {
             let filtered = this.items.filter(i => i.estado !== 'listo');
             if (this.activeFilter !== 'todo') {

@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Clase Interactiva: El Poder de la Reactividad</title>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #0f172a; color: white; padding: 2rem; margin: 0; }
+        .header-title { text-align: center; margin-bottom: 2rem; color: #34d399; }
+        
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; max-width: 1400px; margin: auto; }
+        
+        /* Cajas Principales */
+        .columna { display: flex; flex-direction: column; gap: 1.5rem; }
+        .box { background: #1e293b; padding: 1.5rem; border-radius: 12px; border: 2px solid; position: relative; }
+        .box-vanilla { border-color: #f59e0b; }
+        .box-alpine { border-color: #10b981; }
+        
+        .label { position: absolute; top: -12px; left: 20px; background: #0f172a; padding: 0 10px; font-weight: bold; text-transform: uppercase; font-size: 0.8rem; }
+        .label-vanilla { color: #f59e0b; }
+        .label-alpine { color: #10b981; }
+
+        /* Elementos UI */
+        .badge { background: #4f46e5; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; float: right; }
+        ul { list-style: none; padding: 0; margin-top: 20px; min-height: 100px; background: #0f172a; padding: 10px; border-radius: 8px; }
+        li { background: #334155; margin-bottom: 8px; padding: 10px; border-radius: 6px; display: flex; justify-content: space-between; align-items: center; }
+        button { padding: 8px 12px; cursor: pointer; border-radius: 6px; border: none; font-weight: bold; transition: 0.2s; }
+        .btn-add { background: #3b82f6; color: white; width: 100%; margin-bottom: 10px; }
+        .btn-del { background: #ef4444; color: white; font-size: 0.7rem; }
+
+        /* Bloques de Código (Libro de Texto) */
+        .code-block { background: #000; border-radius: 8px; overflow: hidden; border: 1px solid #334155; }
+        .code-header { background: #1e293b; padding: 8px 12px; font-size: 0.75rem; font-weight: bold; color: #94a3b8; border-bottom: 1px solid #334155; display: flex; justify-content: space-between; }
+        pre { margin: 0; padding: 15px; font-size: 0.8rem; color: #e2e8f0; overflow-x: auto; font-family: 'Consolas', monospace; line-height: 1.5; }
+        
+        /* Resaltado de sintaxis básico */
+        .hl-tag { color: #f472b6; } /* Rosa: Etiquetas HTML */
+        .hl-attr { color: #60a5fa; } /* Azul: Atributos */
+        .hl-str { color: #a7f3d0; } /* Verde claro: Strings */
+        .hl-js { color: #fbbf24; } /* Amarillo: JS keywords */
+        .hl-comment { color: #64748b; font-style: italic; } /* Gris: Comentarios */
+    </style>
+</head>
+<body>
+
+    <h1 class="header-title">El Combate: Vanilla JS vs Alpine.js</h1>
+
+    <div class="grid">
+
+        <!-- ==========================================
+             COLUMNA IZQUIERDA: VANILLA JS
+             ========================================== -->
+        <div class="columna">
+            
+            <!-- ÁREA INTERACTIVA -->
+            <div class="box box-vanilla">
+                <span class="label label-vanilla">1. Prueba Interactiva (Vanilla)</span>
+                <h3 style="margin-top: 0;">Comandas: <span id="v-total" class="badge">0</span></h3>
+                <button class="btn-add" onclick="addVanilla()">+ Añadir Comanda</button>
+                <ul id="v-lista"></ul>
+            </div>
+
+            <!-- LIBRO DE TEXTO: HTML -->
+            <div class="code-block">
+                <div class="code-header">
+                    <span>📄 HTML (Estructura Vacía)</span>
+                    <span>Vanilla JS</span>
+                </div>
+                <pre>
+<span class="hl-tag">&lt;h3&gt;</span>Comandas: <span class="hl-tag">&lt;span</span> <span class="hl-attr">id</span>=<span class="hl-str">"v-total"</span><span class="hl-tag">&gt;</span>0<span class="hl-tag">&lt;/span&gt;</span><span class="hl-tag">&lt;/h3&gt;</span>
+
+<span class="hl-tag">&lt;button</span> <span class="hl-attr">onclick</span>=<span class="hl-str">"addVanilla()"</span><span class="hl-tag">&gt;</span>+ Añadir<span class="hl-tag">&lt;/button&gt;</span>
+
+<span class="hl-comment">&lt;!-- El contenedor debe tener un ID para buscarlo en JS --&gt;</span>
+<span class="hl-tag">&lt;ul</span> <span class="hl-attr">id</span>=<span class="hl-str">"v-lista"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/ul&gt;</span></pre>
+            </div>
+
+            <!-- LIBRO DE TEXTO: JS -->
+            <div class="code-block">
+                <div class="code-header">
+                    <span>🧠 JavaScript (El Trabajo Sucio)</span>
+                    <span>Vanilla JS</span>
+                </div>
+                <pre>
+<span class="hl-comment">// 1. Referencias al DOM (Muy frágil)</span>
+<span class="hl-js">const</span> lista = document.getElementById(<span class="hl-str">'v-lista'</span>);
+<span class="hl-js">const</span> total = document.getElementById(<span class="hl-str">'v-total'</span>);
+<span class="hl-js">let</span> pedidos = [];
+
+<span class="hl-js">function</span> addVanilla() {
+    pedidos.push(<span class="hl-str">'Pedido #'</span> + pedidos.length);
+    
+    <span class="hl-comment">// 2. Crear elementos a mano (El Infierno)</span>
+    <span class="hl-js">const</span> li = document.createElement(<span class="hl-str">'li'</span>);
+    li.innerText = <span class="hl-str">'Pedido...'</span>;
+    
+    <span class="hl-js">const</span> btn = document.createElement(<span class="hl-str">'button'</span>);
+    btn.innerText = <span class="hl-str">'Borrar'</span>;
+    btn.onclick = <span class="hl-js">function</span>() {
+        li.remove(); <span class="hl-comment">// Borrar HTML</span>
+        <span class="hl-comment">// ...lógica para actualizar array y contador...</span>
+    };
+    
+    li.appendChild(btn);
+    lista.appendChild(li); <span class="hl-comment">// Inyectar en pantalla</span>
+    total.innerText = pedidos.length; <span class="hl-comment">// Actualizar contador</span>
+}</pre>
+            </div>
+        </div>
+
+
+        <!-- ==========================================
+             COLUMNA DERECHA: ALPINE JS
+             ========================================== -->
+        <div class="columna">
+            
+            <!-- ÁREA INTERACTIVA -->
+            <div class="box box-alpine" x-data="{ pedidos: [], add() { this.pedidos.push('Pedido #' + (this.pedidos.length + 1)) } }">
+                <span class="label label-alpine">2. Prueba Interactiva (Alpine)</span>
+                <h3 style="margin-top: 0;">Comandas: <span class="badge" x-text="pedidos.length"></span></h3>
+                <button class="btn-add" style="background: #10b981;" @click="add()">+ Añadir Comanda</button>
+                <ul>
+                    <template x-for="(p, index) in pedidos" :key="index">
+                        <li>
+                            <span x-text="p"></span>
+                            <button class="btn-del" @click="pedidos.splice(index, 1)">Borrar</button>
+                        </li>
+                    </template>
+                </ul>
+            </div>
+
+            <!-- LIBRO DE TEXTO: HTML + ALPINE -->
+            <div class="code-block" style="border-color: #10b981;">
+                <div class="code-header" style="background: #064e3b; color: #a7f3d0;">
+                    <span>📄 HTML Reactivo (Todo en uno)</span>
+                    <span>Alpine.js</span>
+                </div>
+                <pre>
+<span class="hl-comment">&lt;!-- 1. Definir el Estado (Cerebro) --&gt;</span>
+<span class="hl-tag">&lt;div</span> <span class="hl-attr">x-data</span>=<span class="hl-str">"{ pedidos: [] }"</span><span class="hl-tag">&gt;</span>
+
+    <span class="hl-comment">&lt;!-- 2. El contador lee el Array directamente --&gt;</span>
+    <span class="hl-tag">&lt;h3&gt;</span>Comandas: <span class="hl-tag">&lt;span</span> <span class="hl-attr">x-text</span>=<span class="hl-str">"pedidos.length"</span><span class="hl-tag">&gt;&lt;/span&gt;</span><span class="hl-tag">&lt;/h3&gt;</span>
+    
+    <span class="hl-comment">&lt;!-- 3. Botón: Modifica el Array --&gt;</span>
+    <span class="hl-tag">&lt;button</span> <span class="hl-attr">@click</span>=<span class="hl-str">"pedidos.push('Pedido')"</span><span class="hl-tag">&gt;</span>+ Añadir<span class="hl-tag">&lt;/button&gt;</span>
+
+    <span class="hl-tag">&lt;ul&gt;</span>
+        <span class="hl-comment">&lt;!-- 4. El Bucle: Pinta el Array automáticamente --&gt;</span>
+        <span class="hl-tag">&lt;template</span> <span class="hl-attr">x-for</span>=<span class="hl-str">"(p, index) in pedidos"</span><span class="hl-tag">&gt;</span>
+            <span class="hl-tag">&lt;li&gt;</span>
+                <span class="hl-tag">&lt;span</span> <span class="hl-attr">x-text</span>=<span class="hl-str">"p"</span><span class="hl-tag">&gt;&lt;/span&gt;</span>
+                <span class="hl-comment">&lt;!-- Borrar es solo sacar del Array --&gt;</span>
+                <span class="hl-tag">&lt;button</span> <span class="hl-attr">@click</span>=<span class="hl-str">"pedidos.splice(index, 1)"</span><span class="hl-tag">&gt;</span>Borrar<span class="hl-tag">&lt;/button&gt;</span>
+            <span class="hl-tag">&lt;/li&gt;</span>
+        <span class="hl-tag">&lt;/template&gt;</span>
+    <span class="hl-tag">&lt;/ul&gt;</span>
+<span class="hl-tag">&lt;/div&gt;</span></pre>
+            </div>
+
+            <!-- LIBRO DE TEXTO: CONCLUSIÓN -->
+            <div class="box" style="background: #0f172a; border-color: #334155; padding: 1rem;">
+                <h4 style="margin-top: 0; color: #10b981;">🧠 El "Clic" Definitivo</h4>
+                <p style="font-size: 0.9rem; color: #cbd5e1; margin-bottom: 0;">
+                    En Vanilla, eres un albañil poniendo ladrillos a mano por cada comanda.<br><br>
+                    En Alpine, eres el arquitecto: dibujas el plano una vez (<code style="color:#f472b6;">template x-for</code>), cambias el dato (el Array), y Alpine construye la casa por ti. <b>No hay código JS suelto</b>, todo fluye desde el HTML.
+                </p>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ==========================================
+         DICCIONARIO DE TRADUCCIÓN: ALPINE -> VANILLA
+         ========================================== -->
+    <div style="margin-top: 3rem; background: #1e293b; padding: 2rem; border-radius: 12px; border: 1px solid #334155; max-width: 1400px; margin-left: auto; margin-right: auto; margin-bottom: 3rem;">
+        <h2 style="color: #34d399; margin-top: 0; text-align: center;">📖 Diccionario: ¿Qué hace Alpine por debajo?</h2>
+        <p style="text-align: center; color: #94a3b8; margin-bottom: 2rem;">Para entender la magia, hay que ver los trucos. Esto es exactamente lo que Alpine te ahorra escribir en Vanilla JS.</p>
+        
+        <div style="overflow-x: auto;">
+            <table style="width: 100%; border-collapse: collapse; text-align: left; min-width: 800px;">
+                <thead>
+                    <tr style="border-bottom: 2px solid #334155;">
+                        <th style="padding: 1rem; color: #10b981;">Directiva Alpine</th>
+                        <th style="padding: 1rem; color: #f59e0b;">Equivalente en Vanilla JS</th>
+                        <th style="padding: 1rem; color: #e2e8f0;">¿Qué significa mentalmente?</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr style="border-bottom: 1px solid #334155; background: rgba(0,0,0,0.2);">
+                        <td style="padding: 1rem;"><code style="background: #064e3b; color: #a7f3d0; padding: 4px 8px; border-radius: 4px; font-family: monospace;">x-data="{ count: 0 }"</code></td>
+                        <td style="padding: 1rem;"><code style="background: #451a03; color: #fde68a; padding: 4px 8px; border-radius: 4px; font-family: monospace;">let state = { count: 0 };</code></td>
+                        <td style="padding: 1rem; color: #94a3b8;"><b style="color: white;">El Cerebro.</b> Crea una caja de memoria (Estado) exclusiva para este bloque HTML.</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #334155;">
+                        <td style="padding: 1rem;"><code style="background: #064e3b; color: #a7f3d0; padding: 4px 8px; border-radius: 4px; font-family: monospace;">x-text="count"</code></td>
+                        <td style="padding: 1rem;"><code style="background: #451a03; color: #fde68a; padding: 4px 8px; border-radius: 4px; font-family: monospace;">el.innerText = state.count;</code></td>
+                        <td style="padding: 1rem; color: #94a3b8;"><b style="color: white;">El Altavoz.</b> Mantiene el texto de la etiqueta sincronizado. Si la variable cambia, el texto cambia solo.</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #334155; background: rgba(0,0,0,0.2);">
+                        <td style="padding: 1rem;"><code style="background: #064e3b; color: #a7f3d0; padding: 4px 8px; border-radius: 4px; font-family: monospace;">@click="sumar()"</code></td>
+                        <td style="padding: 1rem;"><code style="background: #451a03; color: #fde68a; padding: 4px 8px; border-radius: 4px; font-family: monospace;">el.addEventListener('click', () => sumar())</code></td>
+                        <td style="padding: 1rem; color: #94a3b8;"><b style="color: white;">La Oreja.</b> Escucha un evento (click, input, keyup) y ejecuta código. <i>(El @ es un atajo para x-on:)</i>.</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #334155;">
+                        <td style="padding: 1rem;"><code style="background: #064e3b; color: #a7f3d0; padding: 4px 8px; border-radius: 4px; font-family: monospace;">x-show="abierto"</code></td>
+                        <td style="padding: 1rem;"><code style="background: #451a03; color: #fde68a; padding: 4px 8px; border-radius: 4px; font-family: monospace;">el.style.display = abierto ? '' : 'none';</code></td>
+                        <td style="padding: 1rem; color: #94a3b8;"><b style="color: white;">El Interruptor.</b> Oculta o muestra el elemento (usando CSS display: none) según si la variable es true o false.</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #334155; background: rgba(0,0,0,0.2);">
+                        <td style="padding: 1rem;"><code style="background: #064e3b; color: #a7f3d0; padding: 4px 8px; border-radius: 4px; font-family: monospace;">x-for="item in lista"</code></td>
+                        <td style="padding: 1rem;"><code style="background: #451a03; color: #fde68a; padding: 4px 8px; border-radius: 4px; font-family: monospace;">lista.forEach(i => { create(li)... append... })</code></td>
+                        <td style="padding: 1rem; color: #94a3b8;"><b style="color: white;">La Fotocopiadora.</b> Clona la plantilla HTML (`&lt;template&gt;`) por cada elemento que haya en el array.</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 1rem;"><code style="background: #064e3b; color: #a7f3d0; padding: 4px 8px; border-radius: 4px; font-family: monospace;">:class="{'rojo': error}"</code></td>
+                        <td style="padding: 1rem;"><code style="background: #451a03; color: #fde68a; padding: 4px 8px; border-radius: 4px; font-family: monospace;">if(error) el.classList.add('rojo'); else...</code></td>
+                        <td style="padding: 1rem; color: #94a3b8;"><b style="color: white;">El Pintor.</b> Añade o quita clases de CSS dinámicamente si se cumple la condición. <i>(El : es atajo de x-bind:)</i>.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- SCRIPT VANILLA REAL (Oculto visualmente, necesario para la demo) -->
+    <script>
+        let vPedidos = [];
+        const vLista = document.getElementById('v-lista');
+        const vTotal = document.getElementById('v-total');
+
+        function addVanilla() {
+            const texto = 'Pedido #' + (vPedidos.length + 1);
+            vPedidos.push(texto);
+
+            const li = document.createElement('li');
+            const span = document.createElement('span');
+            span.innerText = texto;
+            
+            const btn = document.createElement('button');
+            btn.innerText = 'Borrar';
+            btn.className = 'btn-del';
+            btn.onclick = function() {
+                vPedidos = vPedidos.filter(p => p !== texto);
+                li.remove();
+                vTotal.innerText = vPedidos.length;
+            };
+
+            li.appendChild(span);
+            li.appendChild(btn);
+            vLista.appendChild(li);
+            vTotal.innerText = vPedidos.length;
+        }
+    </script>
+</body>
+</html>
