@@ -1,7 +1,8 @@
 # FASE 3 — Estado Global (Alpine.store)
 ## El App.jsx de Alpine
 
-> **Estado:** ⬜ Pendiente
+> **Estado:** ✅ Completada
+> **Ejemplo:** `ejemplo_fase_3.php`
 
 ### 🧠 La idea central
 En el KDS, el filtro seleccionado ("Ver solo Horno") le importa al `Header` (para pintar el botón naranja) y le importa al `KanbanBoard` (para ocultar columnas). Si usas `x-data` locales, no se pueden comunicar bien. Necesitas un **Estado Global**.

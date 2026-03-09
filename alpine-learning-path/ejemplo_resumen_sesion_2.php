@@ -26,6 +26,31 @@ $json_datos = json_encode($comandas_iniciales);
             margin: 0;
         }
 
+        /* 🎭 CLASES DE TRANSICIÓN PERSONALIZADAS */
+        .tarjeta-entra {
+            transition: all 0.5s ease-out;
+        }
+        .tarjeta-entra-inicio {
+            opacity: 0;
+            transform: translateX(50px); /* Viene de la derecha */
+        }
+        .tarjeta-entra-fin {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .tarjeta-sale {
+            transition: all 0.4s ease-in;
+        }
+        .tarjeta-sale-inicio {
+            opacity: 1;
+            transform: scale(1);
+        }
+        .tarjeta-sale-fin {
+            opacity: 0;
+            transform: scale(0.5); /* Se encoge al centro */
+        }
+
         .header-title {
             text-align: center;
             margin-bottom: 0.75rem;
@@ -353,9 +378,11 @@ $json_datos = json_encode($comandas_iniciales);
                 + Entra comanda aleatoria
             </button>
 
-            <div>
+            <div style="min-height: 100px;">
                 <template x-for="item in comandas" :key="item.id">
-                    <div class="kds-card">
+                    <div class="kds-card" 
+                         x-transition:enter.duration.500ms.scale.0
+                         x-transition:leave.duration.400ms.scale.0.opacity.0>
                         <div>
                             <strong x-text="item.mesa" style="color: #38bdf8;"></strong><br>
                             <span x-text="item.plato"></span>
@@ -364,12 +391,24 @@ $json_datos = json_encode($comandas_iniciales);
                     </div>
                 </template>
 
-                <div x-show="comandas.length === 0" style="text-align: center; color: #64748b; padding: 20px;">
+                <div x-show="comandas.length === 0" 
+                     x-transition.duration.800ms
+                     style="text-align: center; color: #64748b; padding: 20px;">
                     No hay comandas pendientes. Buen trabajo.
                 </div>
             </div>
 
-            <div class="code-block" style="border-color: #f59e0b;">
+            <button class="btn" 
+                    style="background: #475569; margin-top: 20px; font-size: 0.8rem;"
+                    @click="mostrarJson = !mostrarJson">
+                <span x-text="mostrarJson ? 'Ocultar JSON' : 'Ver JSON'"></span>
+            </button>
+
+            <div class="code-block" 
+                 x-show="mostrarJson"
+                 x-transition:enter.duration.400ms.origin.top
+                 x-transition:leave.duration.200ms
+                 style="border-color: #f59e0b;">
                 <div class="code-header" style="color: #f59e0b;">
                     <span>Visor de estado</span>
                     <span>JSON real del array</span>
@@ -387,6 +426,7 @@ $json_datos = json_encode($comandas_iniciales);
                 <pre>document.addEventListener('alpine:init', () => {
     Alpine.data('ModuloKDS', (datosIniciales) => ({
         comandas: datosIniciales,
+        mostrarJson: false, // <-- Nuevo estado para el visor
 
         nuevaComanda() {
             this.comandas.push({
@@ -410,9 +450,9 @@ $json_datos = json_encode($comandas_iniciales);
                 <ul class="question-list">
                     <li><code>json_encode()</code> es el puente entre PHP y Alpine.</li>
                     <li><code>Alpine.data()</code> registra una fabrica, no una instancia unica global.</li>
+                    <li><code>x-transition</code> añade animaciones sin CSS externo.</li>
                     <li><code>x-data="ModuloKDS(...)"</code> ejecuta esa fabrica y crea el estado del bloque.</li>
                     <li>Modificar <code>this.comandas</code> hace que Alpine recalcule la vista.</li>
-                    <li>Extraer logica no es postureo: es lo que evita que el HTML se vuelva inmantenible.</li>
                 </ul>
             </div>
 
@@ -438,10 +478,10 @@ $json_datos = json_encode($comandas_iniciales);
                         <td><code>x-data="KDS(...)"</code></td>
                     </tr>
                     <tr>
-                        <td><b>Pintar lista</b></td>
-                        <td><code>lista.forEach(...)</code></td>
+                        <td><b>Animar cambios</b></td>
+                        <td>CSS Transitions / Framer</td>
                         <td>-</td>
-                        <td><code>x-for</code></td>
+                        <td><code>x-transition</code></td>
                     </tr>
                     <tr>
                         <td><b>Reflejar cambios</b></td>
@@ -458,6 +498,7 @@ $json_datos = json_encode($comandas_iniciales);
         document.addEventListener('alpine:init', () => {
             Alpine.data('ModuloKDS', (datosIniciales) => ({
                 comandas: datosIniciales,
+                mostrarJson: false,
 
                 nuevaComanda() {
                     this.comandas.push({

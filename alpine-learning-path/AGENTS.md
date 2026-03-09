@@ -105,10 +105,11 @@ No hacerlo por mania estetica: solo cuando ayude a entender estructura.
 - [x] `Fase 0: Setup del proyecto` -> `ejemplo_fase_0.html`
 - [x] `Fase 1: Reactividad basica` -> `ejemplo_fase_1.html`
 - [x] `Conexion PHP + SQLite` -> `ejemplo_fase_php.php`
-- [ ] `Fase 2: Extraccion de logica` -> `Alpine.data()`
-- [ ] `Fase 3: Estado global y getters` -> `Alpine.store()`
+- [x] `Fase 2: Extraccion de logica` -> `Alpine.data()`
+- [x] `Fase 3: Estado global y getters` -> `Alpine.store()`
 - [ ] `Fase 4: Plugins, efectos y magia` -> `$persist`, `x-effect`
 - [ ] `Fase 5: Conexion real` -> `SSE`, `fetch`
+- [ ] `Fase 6: Ecosistema y Estrategias Avanzadas` -> `Morph`, `Teleport`, `Custom Directives`
 
 ## Criterio final
 La meta no es "usar Alpine".
